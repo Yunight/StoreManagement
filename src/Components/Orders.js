@@ -43,7 +43,6 @@ class Orders extends Component {
 
         }
         let rows;
-
         if(ordersValide!= undefined && ordersValide != null){
             ordersValide.orders.sort(function(a,b){
                 let c = new Date(a.date);
