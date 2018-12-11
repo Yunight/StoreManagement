@@ -13,37 +13,31 @@ class Orders extends Component {
             orders : orders ? orders : null,
             items : items ? items : null,
             isStandalone : false,
-
         }
     }
 
     render() {
 
-        const columns = ['date','id','items'];
+        const {orders, items, title, fromStore, columns} = this.props
 
-        const {orders,items,title,fromStore} = this.props
+        let ordersValide, itemsValide, titleValide, columnsValide, ordersNumber;
 
-        let ordersValide;
-        let itemsValide;
-        let titleValide;
-
-        let ordersNumber;
-
-
-        if( orders == undefined || items ==undefined){
+        if( orders === undefined || items === undefined){
             ordersValide = this.state.orders;
             itemsValide = this.state.items;
-            titleValide = "Toutes les commandes";
+            titleValide = "Toutes les commandes (ALL)";
+            columnsValide = ['date','id','items'];;
             ordersNumber = 200;
         }else{
             ordersValide = orders;
             itemsValide = items;
             titleValide = title
             ordersNumber = 10;
+            columnsValide = columns;
 
         }
         let rows;
-        if(ordersValide!= undefined && ordersValide != null){
+        if(ordersValide!== undefined && ordersValide !== null){
             ordersValide.orders.sort(function(a,b){
                 let c = new Date(a.date);
                 let d = new Date(b.date);
@@ -56,13 +50,13 @@ class Orders extends Component {
                     key={order.id}
                     order={order}
                     items={itemsValide}
-                    listOfColumns={columns}
+                    listOfColumns={columnsValide}
                 />
             })
         }
         return (
             <div className={"container"}>
-                        <h1 className={"titleStyle"}> {titleValide} </h1>
+                    <h1 className={"titleStyle"}> {titleValide} </h1>
                     <div className={"table-wrapper-2"}>
                         <table className="table table-bordered table-responsive-md">
                             <thead className="thead-dark">

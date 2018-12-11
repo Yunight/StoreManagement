@@ -11,16 +11,9 @@ class Order extends Component {
     }
 
 
-    handleClick= (event) =>  {
-
-        const{onRowClick, order } = this.props;
-
-        onRowClick(event,order)
-    }
-
     render() {
 
-        const {items,order,listOfColumns,selectedState} = this.props;
+        const {items,order,listOfColumns} = this.props;
 
         const cells = listOfColumns.map((columnName)=>{
             const columnValue = order[columnName];
@@ -37,7 +30,6 @@ class Order extends Component {
                     {arrayProductWithNames.map((item,index) => (
                         <li key={index}>{String(item.item_id)} - Quantité : {String(item.quantity)}</li>))}
                 </tr>
-
             }
             return <td className={"alignmiddle"} key={columnName}>
                 {cellContent}
@@ -45,10 +37,8 @@ class Order extends Component {
 
         });
 
-        let className = (selectedState) ? "blue" : "white";
-
         return (
-            <tr onClick={this.handleClick} className={className}>
+            <tr>
                 {cells}
             </tr>
         )
