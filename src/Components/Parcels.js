@@ -5,7 +5,11 @@ import Order from "./Order";
 import orders from "../Data/orders";
 import items from "../Data/items";
 import Parcel from "./Parcel";
+import Immutable from "seamless-immutable";
 import {
+    availableParcel,
+    createParcels, generateTrackingID,
+    getOrderTotalWeight,
     getProductName,
     getProductNameWithWeight,
     mergeIdenticalItem, parcelIsFull,
@@ -60,48 +64,66 @@ class Parcels extends Component {
             let order_id,weight,status,tracking_id;
             let itemsParcel=[];
 
-            ordersValide.orders.sort(function(a,b){
-                let c = new Date(a.date);
-                let d = new Date(b.date);
-                return c-d;
-            })
+        ordersValide.orders.sort(function(a,b){
+            let c = new Date(a.date);
+            let d = new Date(b.date);
+            return c-d;
+        })
 
-            ordersValide.orders.reverse();
+        ordersValide.orders.reverse();
 
-            ordersValide.orders.map(order =>{
-                order_id = order.id;
-                let itemsWithWeight =  mergeIdenticalItem(getProductNameWithWeight(order.items,items))
+        ordersValide.orders.map(order =>{
+            order_id = order.id;
+            let itemsWithWeight =  mergeIdenticalItem(getProductNameWithWeight(order.items,items))
 
-                    itemsWithWeight.map(item =>{
+            let totalWeight = getOrderTotalWeight(itemsWithWeight);
+            let nbOfParcelsNeeded = Math.ceil(totalWeight/30);
+            let createdParcels =  createParcels(nbOfParcelsNeeded);
 
-                        if(item.quantity >0 && !parcelIsOverweight(weight,item)){
-                            let sendToParcel = {
+
+                itemsWithWeight.map(item =>{
+                    for(let i = 0 ; i<= item.quantity;i++){
+                        let sendToParcel={}
+                        if(item.quantity >0 ){
+                            sendToParcel = {
                                 item_id : item.item_id,
                                 quantity : 1,
                             }
-                            item.quantity = item.quantity -1;
+                    }
+                        for(let i = 0; i<item.quantity ;i ++){
+                            if(createdParcels[i].weight + parseFloat(item.weight) < 30 && item.quantity >0){
+                                //createdParcels[i].push(sendToParcel)
 
-                            itemsParcel.push(sendToParcel)
+                                createdParcels[i].items[i].splice();
+                                createdParcels[i].weight+=parseFloat(item.weight);
+                                item.quantity = item.quantity -1;
+                            }
+
                         }
-                    })
+                    }
 
-                //console.log("itemsWithWeight")
-                //console.log(itemsWithWeight)
-
-                //console.log("itemsParcel")
-                //console.log(itemsParcel)
-
-
+                })
+               let a = 1;
+            createdParcels.map(item => {
+                item.weight += a;
+                console.log(item);
             })
+            //console.log("itemsWithWeight")
+            //console.log(itemsWithWeight)
 
-            rows = ordersValide.orders.slice(0,ordersNumber).map((order) => {
-                return <Parcel
-                    key={order.id}
-                    order={order}
-                    items={itemsValide}
-                    listOfColumns={columnsParcelsValide}
-                />
-            })
+            //console.log("itemsParcel")
+            //console.log(itemsParcel)
+
+        })
+
+        rows = ordersValide.orders.slice(0,ordersNumber).map((order) => {
+            return <Parcel
+                key={order.id}
+                order={order}
+                items={itemsValide}
+                listOfColumns={columnsParcelsValide}
+            />
+        })
         }
 
         return (
