@@ -77,7 +77,6 @@ class Parcels extends Component {
             palette_number++
         })
 
-
         rows = preparedPacels.map((order) => {
             return <Parcel
                 key={order.palette_number}
