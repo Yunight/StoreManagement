@@ -67,6 +67,10 @@
   margin-right: 2%;
 }
 
+.marginleft{
+  margin-left: 2%;
+}
+
 .min500{
   min-height: 720px !important;
 }
