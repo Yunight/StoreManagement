@@ -96,7 +96,7 @@ export function getOrderTotalWeight(orders){
 
 export function createParcels(amount){
 
-    let parcels=Immutable([]);
+    let parcels=[];
 
     let parcelUnity  = {
         'order_id' : 0,
@@ -109,12 +109,12 @@ export function createParcels(amount){
 
     if(amount>0){
         for(let i = 0 ; i<amount ; i++){
-            var parcels2 = parcels.concat(Immutable(parcelUnity))
+            parcels.add(parcelUnity)
 
         }
     }
 
-    return parcels2
+    return parcels
 }
 
 export function generateTrackingID(parcels){

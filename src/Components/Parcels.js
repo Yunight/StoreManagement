@@ -80,6 +80,10 @@ class Parcels extends Component {
             let nbOfParcelsNeeded = Math.ceil(totalWeight/30);
             let createdParcels =  createParcels(nbOfParcelsNeeded);
 
+            let ImmutableParcels = Immutable(createdParcels);
+
+            console.log(ImmutableParcels)
+
 
                 itemsWithWeight.map(item =>{
                     for(let i = 0 ; i<= item.quantity;i++){
