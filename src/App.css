@@ -111,7 +111,8 @@
 
 .alignLeft{
   text-align: left;
-
+  padding-left: 10%;
+  list-style-type: none;
 }
 
 .alignmiddle{
