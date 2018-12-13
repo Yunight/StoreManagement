@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './App.css';
-import axios from 'axios'
 import items from './Data/items.json'
 import orders from './Data/orders.json'
 import Orders from "./Components/Orders";
@@ -9,6 +8,7 @@ import Parcels from "./Components/Parcels";
 import Store from "./Components/Store";
 
 const columnsOrders = ['date','id','items'];
+const columnsParcelsValide = ['order_id','items','weight',"status","tracking_id","palette_number","price"];
 
 class App extends Component {
     constructor () {
@@ -18,23 +18,9 @@ class App extends Component {
             orders : orders,
         }
     }
-
-    getRandomTracket(){
-        axios.get("https://helloacm.com/api/random/?n=15")
-            .then(response => this.setState({parcel: response.data}))
-    }
-
   render() {
 
       const {orders,items} = this.state
-     /* if (typeof this.state.parcel !== 'undefined' && this.state.parcel.length > 0){
-
-          console.log(this.state.parcel)
-                       /* <Route exact
-                     path="/country/:countryKey"
-                     component={CountryDetailRouteComponent}
-              />
-      }*/
 
       return <BrowserRouter>
           <Switch>
@@ -45,7 +31,7 @@ class App extends Component {
               </Route>
 
               <Route exact path="/parcels">
-                  <Parcels orders = {orders} items = {items} columns={columnsOrders} />
+                  <Parcels orders = {orders} items = {items} columns={columnsParcelsValide} />
               </Route>
 
               <Route exact path="/orders">

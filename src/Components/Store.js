@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import orders from '../Data/orders.json'
 import {Link} from "react-router-dom";
 import {Button} from "reactstrap";
@@ -12,10 +12,6 @@ class Store extends Component {
             orders : orders ? orders : null,
 
         }
-    }
-
-    sendMail= () => {
-        window.location.href='mailto:benchi.chen.bc@gmail.com';
     }
 
     render() {

@@ -3,7 +3,6 @@
 // ALL UTILITIES FUNCTIONS
 
 import axios from "axios";
-import Immutable from "seamless-immutable";
 
 export function getProductName(orderProducts, NamedProducts) {
 
@@ -94,42 +93,80 @@ export function getOrderTotalWeight(orders){
     return totalWeight.toFixed(2);
 }
 
-export function createParcels(amount){
+export function createParcels(amount,itemsWithWeight,order_id){
 
-    let parcels=[];
-
-    let parcelUnity  = {
-        'order_id' : 0,
-        'items': [],
-        'weight':0,
-        "status":"En attente",
-        "tracking_id":null,
-        "palette_number" :null,
-    }
+    let totalparcels = [];
 
     if(amount>0){
-        for(let i = 0 ; i<amount ; i++){
-            parcels.add(parcelUnity)
 
+        for(let i = 0 ; i<amount ; i++){
+            let filledParcel={};
+            let parcelsingleProduct  = {
+                'order_id' : 0,
+                'items': [],
+                'weight':0,
+                "status":"à livrer",
+                "tracking_id":null,
+                "palette_number" :null,
+                "price" : null,
+            }
+
+            itemsWithWeight.map(item =>{
+                if(item.quantity != 0){
+
+                for(let i = 0 ; i<= item.quantity;i++){
+
+                    let sendToParcel={}
+                    if(item.quantity >0 && parcelsingleProduct.weight + parseFloat(item.weight) <30){
+                        sendToParcel = {
+                            item_id : item.item_id,
+                            quantity : 1,
+                        }
+                        item.quantity -= 1
+                        if(item.quantity == 0) {
+
+                        }
+                        parcelsingleProduct.weight += parseFloat(item.weight);
+                        parcelsingleProduct.items.push(sendToParcel)
+                    }
+
+                    parcelsingleProduct.weight = parseFloat(parcelsingleProduct.weight.toFixed(2));
+
+                }
+                }
+            })
+            parcelsingleProduct.order_id = order_id
+
+            parcelsingleProduct.items = mergeIdenticalItem(parcelsingleProduct.items)
+            filledParcel = parcelsingleProduct;
+
+            generateTrackingID(filledParcel)
+            totalparcels.push(filledParcel);
         }
     }
-
-    return parcels
+    return totalparcels
 }
 
-export function generateTrackingID(parcels){
+export function isOverWeightAfterAddingProduct(parcel, addedProduct){
+
+    let totalWeight = 0;
+    totalWeight = parcel.weight + addedProduct.weight;
+    if(totalWeight > 30) {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+export function generateTrackingID(parcel){
 
     let trackingID = ''
 
-    parcels.map(parcel => {
-        parcel.tracking_id = axios.get("https://helloacm.com/api/random/?n=15")
+    axios.get("https://helloacm.com/api/random/?n=15")
             .then(response => {
                 trackingID = response.data;
             })
-    })
-
-
-    return parcels
+    return parcel
 }
 
 export function availableParcel(parcels) {
@@ -142,6 +179,32 @@ export function availableParcel(parcels) {
             return false;
         }
     })
+}
+
+export function calculateParcelPrice(parcelWeight){
+
+    let price = 0;
+    if(parcelWeight>0 && parcelWeight <1){
+        price = 1;
+    }
+
+    if(parcelWeight>1 && parcelWeight <5){
+        price = 2;
+    }
+
+    if(parcelWeight>5 && parcelWeight <10){
+        price = 3;
+    }
+
+    if(parcelWeight>10 && parcelWeight <20){
+        price = 5;
+    }
+
+    if(parcelWeight>20){
+        price = 10;
+    }
+
+    return price
 }
 
 
